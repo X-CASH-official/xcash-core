@@ -2449,14 +2449,14 @@ std::string WalletImpl::delegate_register(const  std::string &delegate_name,cons
   try
   {
     // check if the second paramter is multiple words and combine them
-    if (item == "about" || item == "team" || item == "server_settings")
+    if (item == "about" || item == "team" || item == "server_specs")
     {
       parameters = value; 
     }
     // check if the item to update is a valid item
-    if (item != "IP_address" && item != "about" && item != "website" && item != "team" && item != "pool_mode" && item != "fee_structure" && item != "server_settings")
+    if (item != "IP_address" && item != "about" && item != "website" && item != "team" && item != "pool_mode" && item != "fee_structure" && item != "server_specs")
     { 
-      return "Failed to update the delegates information\nInvalid item. Valid items are: IP_address,about, website, team, pool_mode, fee_structure and server_settings";  
+      return "Failed to update the delegates information\nInvalid item. Valid items are: IP_address,about, website, team, pool_mode, fee_structure and server_specs";  
     }
     if (item== "IP_address" && (value.length() > 255 ||value.find(":") != std::string::npos))
     {
@@ -2482,9 +2482,9 @@ std::string WalletImpl::delegate_register(const  std::string &delegate_name,cons
     {
       return "Failed to update the delegates information\nInvalid fee_structure. Fee_structure length must be less than 10";  
     }
-    if (item == "server_settings" && parameters.length() > 255)
+    if (item == "server_specs" && parameters.length() > 255)
     {
-      return "Failed to update the delegates information\nInvalid server_settings. Server_settings length must be less than 255";  
+      return "Failed to update the delegates information\nInvalid server_specs. server_specs length must be less than 255";  
     }
     // initialize the network_data_nodes_list struct
     INITIALIZE_NETWORK_DATA_NODES_LIST_STRUCT;
