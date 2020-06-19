@@ -3772,10 +3772,10 @@ bool wallet_rpc_server::on_delegate_update(const wallet_rpc::COMMAND_RPC_DELEGAT
   }
 
   // check if the item to update is a valid item
-  if (req.item != "IP_address" && req.item != "about" && req.item != "website" && req.item != "team" && req.item != "shared_delegate" && req.item != "fee_structure" && req.item != "server_specs")
+  if (req.item != "IP_address" && req.item != "about" && req.item != "website" && req.item != "team" && req.item != "shared_delegate" && req.item != "fee" && req.item != "server_specs")
   {
     er.code = WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR;
-    er.message = "Failed to update the delegates information\nInvalid item. Valid items are: about, website, team, shared_delegate, fee_structure and server_specs";
+    er.message = "Failed to update the delegates information\nInvalid item. Valid items are: about, website, team, shared_delegate, fee and server_specs";
     return false;
   }
   if (req.item == "IP_address" && (req.value.length() > 255 || req.value.find(":") != std::string::npos))
@@ -3808,10 +3808,10 @@ bool wallet_rpc_server::on_delegate_update(const wallet_rpc::COMMAND_RPC_DELEGAT
     er.message = "Failed to update the delegates information\nInvalid shared_delegate. shared_delegate must be either true or false";
     return false; 
   }
-  if (req.item == "fee_structure" && req.value.length() > 10)
+  if (req.item == "fee" && req.value.length() > 10)
   {
     er.code = WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR;
-    er.message = "Failed to update the delegates information\nInvalid fee_structure. Fee_structure length must be less than 10";
+    er.message = "Failed to update the delegates information\nInvalid fee. fee length must be less than 10";
     return false;  
   }
   if (req.item == "server_specs" && req.value.length() > 1024)
