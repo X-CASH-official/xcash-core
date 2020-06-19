@@ -3200,7 +3200,7 @@ simple_wallet::simple_wallet()
                            tr("Registers a delegate in the X-Cash DPOPS system"));
   m_cmd_binder.set_handler("delegate_update",
                            boost::bind(&simple_wallet::delegate_update, this, _1),
-                           tr("delegate_update <about|website|team|shared_delegate_status|fee|server_specs> <value>"),
+                           tr("delegate_update [about|website|team|shared_delegate_status|fee|server_specs] <value>"),
                            tr("Updates a registered delegates data in the X-Cash DPOPS system"));
   m_cmd_binder.set_handler("help",
                            boost::bind(&simple_wallet::help, this, _1),
