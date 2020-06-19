@@ -2454,9 +2454,9 @@ std::string WalletImpl::delegate_register(const  std::string &delegate_name,cons
       parameters = value; 
     }
     // check if the item to update is a valid item
-    if (item != "IP_address" && item != "about" && item != "website" && item != "team" && item != "shared_delegate" && item != "fee" && item != "server_specs")
+    if (item != "IP_address" && item != "about" && item != "website" && item != "team" && item != "shared_delegate_status" && item != "fee" && item != "server_specs")
     { 
-      return "Failed to update the delegates information\nInvalid item. Valid items are: IP_address,about, website, team, shared_delegate, fee and server_specs";  
+      return "Failed to update the delegates information\nInvalid item. Valid items are: IP_address,about, website, team, shared_delegate_status, fee and server_specs";  
     }
     if (item== "IP_address" && (value.length() > 255 ||value.find(":") != std::string::npos))
     {
@@ -2474,9 +2474,9 @@ std::string WalletImpl::delegate_register(const  std::string &delegate_name,cons
     {
       return "Failed to update the delegates information\nInvalid team. Team length must be less than 255";  
     }
-    if (item == "shared_delegate" && value != "true" && value!= "false")
+    if (item == "shared_delegate_status" && value != "true" && value!= "false")
     {
-      return "Failed to update the delegates information\nInvalid shared_delegate. shared_delegate must be either true or false";  
+      return "Failed to update the delegates information\nInvalid shared_delegate_status. shared_delegate_status must be either true or false";  
     }
     if (item == "fee" && value.length() > 10)
     {
