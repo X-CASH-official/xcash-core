@@ -3772,10 +3772,10 @@ bool wallet_rpc_server::on_delegate_update(const wallet_rpc::COMMAND_RPC_DELEGAT
   }
 
   // check if the item to update is a valid item
-  if (req.item != "IP_address" && req.item != "about" && req.item != "website" && req.item != "team" && req.item != "shared_delegate" && req.item != "delegate_fee" && req.item != "server_specs")
+  if (req.item != "IP_address" && req.item != "about" && req.item != "website" && req.item != "team" && req.item != "shared_delegate_status" && req.item != "delegate_fee" && req.item != "server_specs")
   {
     er.code = WALLET_RPC_ERROR_CODE_UNKNOWN_ERROR;
-    er.message = "Failed to update the delegates information\nInvalid item. Valid items are: about, website, team, shared_delegate, delegate_fee and server_specs";
+    er.message = "Failed to update the delegates information\nInvalid item. Valid items are: about, website, team, shared_delegate_status, delegate_fee and server_specs";
     return false;
   }
   if (req.item == "IP_address" && (req.value.length() > 255 || req.value.find(":") != std::string::npos))
