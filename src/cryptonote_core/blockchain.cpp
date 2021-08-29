@@ -41,7 +41,7 @@
 #include <boost/asio/use_future.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/thread.hpp>
- 
+
 #include "include_base_utils.h"
 #include "string_tools.h"
 #include "cryptonote_basic/cryptonote_basic_impl.h"
@@ -116,7 +116,7 @@ static const struct {
 
   // version 8 starts from block 95085, which is on or around Oct 8, 2018. This version includes a new difficulty algorithm.
   { 8, 95085, 0, 1538524800 },
-  
+
   // version 9 starts from block 106000, which is on or around Oct 16, 2018. This version includes a change to the new difficulty algorithm.
   { 9, 106000, 0, 1539550195 },
 
@@ -907,7 +907,7 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
   difficulty_type diff;
   if(version <= 7){
     target = DIFFICULTY_TARGET_V10;
-    diff = next_difficulty(timestamps, difficulties, target);    
+    diff = next_difficulty(timestamps, difficulties, target);
   }
   else if(version == 8){
     target = DIFFICULTY_TARGET_V10;
@@ -3247,7 +3247,7 @@ bool Blockchain::check_block_timestamp(const block& b, uint64_t& median_ts) cons
 {
   uint8_t version = get_current_hard_fork_version();
   uint64_t cryptonote_block_future_time_limit;
-  uint64_t blockchain_timestamp_check_window;  
+  uint64_t blockchain_timestamp_check_window;
   if(version <= 7){
     cryptonote_block_future_time_limit = CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT;
     blockchain_timestamp_check_window = BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW;
@@ -3739,19 +3739,19 @@ pointer = NULL;
 // global variables
 std::vector<std::string> block_verifiers_database_hashes(BLOCK_VERIFIERS_TOTAL_AMOUNT);
 
-
+int hashesStatus=0;
 
 int random_string(char *result, const size_t LENGTH)
-{  
+{
   // define macros
-  #define STRING "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" 
+  #define STRING "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
   #define MINIMUM 0
   #define MAXIMUM 61
-  
+
   // Variables
   char data[100];
   size_t count;
-  
+
   memset(data,0,sizeof(data));
   memcpy(data,STRING,sizeof(STRING)-1);
   for (count = 0; count < LENGTH; count++)
@@ -3759,10 +3759,10 @@ int random_string(char *result, const size_t LENGTH)
     memcpy(result+count,&data[(rand() % (MAXIMUM - MINIMUM + 1)) + MINIMUM],1);
   }
   return 1;
-  
+
   #undef STRING
   #undef MINIMUM
-  #undef MAXIMUM  
+  #undef MAXIMUM
 }
 
 int VRF_sign_data(char *beta_string, char *proof, const char* data)
@@ -3840,7 +3840,7 @@ int sign_data(char *message)
 
   // check if the memory needed was allocated on the heap successfully
   if (result == NULL || string == NULL)
-  {    
+  {
     if (result != NULL)
     {
       pointer_reset(result);
@@ -3851,12 +3851,12 @@ int sign_data(char *message)
     }
     exit(0);
   }
-  
+
   memset(proof,0,sizeof(proof));
   memset(beta_string,0,sizeof(beta_string));
   memset(random_data,0,sizeof(random_data));
   memset(data,0,sizeof(data));
-  
+
   // create the random data
   if (random_string(random_data,RANDOM_STRING_LENGTH) == 0)
   {
@@ -3867,24 +3867,24 @@ int sign_data(char *message)
   memcpy(result,message,strlen(message));
   memcpy(result+strlen(result),random_data,RANDOM_STRING_LENGTH);
   memcpy(result+strlen(result),"|",1);
- 
+
   // sign data
   if (VRF_sign_data(beta_string,proof,result) == 0)
   {
     SIGN_DATA_ERROR;
-  }    
+  }
 
-  // create the message  
+  // create the message
   memcpy(message+strlen(message),random_data,RANDOM_STRING_LENGTH);
   memcpy(message+strlen(message),"|",1);
   memcpy(message+strlen(message),proof,VRF_PROOF_LENGTH);
   memcpy(message+strlen(message),beta_string,VRF_BETA_LENGTH);
   memcpy(message+strlen(message),"|",1);
-  
+
   pointer_reset_all;
   return 1;
 
-  #undef pointer_reset_all  
+  #undef pointer_reset_all
   #undef SIGN_DATA_ERROR
 }
 
@@ -3989,10 +3989,11 @@ bool verify_network_block(std::vector<std::string> &block_verifiers_database_has
     { \
       data[count] = data[count].substr(DATA_HASH_LENGTH+1); \
     } \
+    hashesStatus=0;\
   } \
-  
 
-  // get the network block string 
+
+  // get the network block string
   network_block_string = epee::string_tools::buff_to_hex_nodelimer(t_serializable_object_to_blob(bl));
 
   // get the data hash
@@ -4004,7 +4005,7 @@ bool verify_network_block(std::vector<std::string> &block_verifiers_database_has
   // check if the blocks reserve bytes hash matches any of the network data nodes
   VERIFY_DATA_HASH(BLOCK_VERIFIERS_TOTAL_AMOUNT,block_verifiers_database_hashes,block_verifier_count);
 
-  if (block_verifier_count >= BLOCK_VERIFIERS_VALID_AMOUNT)
+  if (block_verifier_count >= BLOCK_VERIFIERS_VALID_AMOUNT||(hashesStatus==1&&block_verifier_count>=1))
   {
     RESET_DATA_HASH(BLOCK_VERIFIERS_TOTAL_AMOUNT,block_verifiers_database_hashes);
     return true;
@@ -4015,6 +4016,26 @@ bool verify_network_block(std::vector<std::string> &block_verifiers_database_has
   #undef RESET_DATA_HASH
 }
 
+std::vector<std::string> split(const char *s, const char *delim)
+{
+    std::vector<std::string> result;
+    if (s && strlen(s))
+    {
+        int len = strlen(s);
+        char *src = new char[len + 1];
+        strcpy(src, s);
+        src[len] = '\0';
+        char *strptr = strtok(src, delim);
+        while (strptr != NULL)
+        {
+            std::string tk = strptr;
+            result.emplace_back(tk);
+            strptr = strtok(NULL, delim);
+        }
+        delete[] src;
+    }
+    return result;
+}
 
 bool get_network_block_database_hash(std::vector<std::string> &block_verifiers_database_hashes,const std::size_t current_block_height)
 {
@@ -4110,6 +4131,45 @@ bool get_network_block_database_hash(std::vector<std::string> &block_verifiers_d
     message_string = "{\r\n \"message_settings\": \"NODE_TO_BLOCK_VERIFIERS_GET_RESERVE_BYTES_DATABASE_HASH\",\r\n \"block_height\": \"" + std::to_string(current_block_height) + "\",\r\n}";
   }
 
+  std::string current_block_verifiers_list_public_address = string.substr(string.find("\"block_verifiers_public_address_list\": \"")+40,(string.find("\"",string.find("\"block_verifiers_public_address_list\": \"")+40)) - (string.find("\"block_verifiers_public_address_list\": \"")+40));
+  std::vector<std::string> ip_addresses=split(current_block_verifiers_list_IP_address.data(),"|");
+  std::vector<std::string> public_addresses=split(current_block_verifiers_list_public_address.data(),"|");
+  if(ip_addresses.size()!=public_addresses.size()){
+      MGINFO_RED( "IP address length need same as public_address length");//Better have a retry refresh a get list
+      return false;
+  }
+  std::string ip_address;
+  std::string public_address;
+  int passRootRequest = 0;
+  std::string result;
+  for(uint64_t i=0; i<public_addresses.size(); i++)
+  {
+     ip_address=ip_addresses[i];
+     public_address=public_addresses[i];
+     if(public_address==NETWORK_DATA_NODE_PUBLIC_ADDRESS_1||public_address==NETWORK_DATA_NODE_PUBLIC_ADDRESS_2||public_address==NETWORK_DATA_NODE_PUBLIC_ADDRESS_3||public_address==NETWORK_DATA_NODE_PUBLIC_ADDRESS_4||public_address==NETWORK_DATA_NODE_PUBLIC_ADDRESS_5){
+        result = send_and_receive_data(ip_address,message_string,SEND_OR_RECEIVE_SOCKET_DATA_DOWNLOAD_DATABASE_HASH_WEAK_TIMEOUT_SETTINGS);//Some not root node server my drop port
+        if (result != NODE_TO_BLOCK_VERIFIERS_GET_RESERVE_BYTES_DATABASE_HASH_ERROR_MESSAGE && result != "")
+        {
+          block_verifiers_database_hashes[passRootRequest] = result == NODE_TO_BLOCK_VERIFIERS_GET_RESERVE_BYTES_DATABASE_HASH_ERROR_MESSAGE || result == "" ? "" : result;
+          passRootRequest++;
+          if(passRootRequest>2){
+           break;
+          }
+        }
+     }
+  }
+  if(passRootRequest>=2){
+      hashesStatus=1;
+      MGINFO_RED("Pass root node validate");
+      return true;
+    }
+  if(passRootRequest==0){
+     MGINFO_RED("At least need include one root node sign it");
+     if(OPEN_SAFE_VALIDATE==1){
+        return false;
+     }
+  }
+
   // get the reserve bytes database hash from each block verifier up to a maxium of 288 * 30 blocks
   for (count = 0, count2 = 0, count3 = 0; count < total_delegates; count++)
   {
@@ -4141,7 +4201,6 @@ bool get_network_block_database_hash(std::vector<std::string> &block_verifiers_d
 }
 
 
-
 bool check_if_synced(const std::vector<std::string> block_verifiers_database_hashes)
 {
   // Variables
@@ -4164,7 +4223,7 @@ bool check_block_verifier_node_signed_block(const block bl, const std::size_t cu
 {
   // Variables
   std::size_t count = 0;
-  
+
   #define CHECK_BLOCK_VERIFIER_NODE_SIGNED_BLOCK_ERROR(message) \
   MGINFO_RED(message); \
   for (count = 0; count < BLOCK_VERIFIERS_TOTAL_AMOUNT; count++) \
@@ -4234,7 +4293,7 @@ bool Blockchain::add_new_block(const block& bl_, block_verification_context& bvc
   {
     bvc.m_added_to_main_chain = false;
     m_db->block_txn_stop();
-    m_blocks_txs_check.clear();    
+    m_blocks_txs_check.clear();
     return false;
   }
 
