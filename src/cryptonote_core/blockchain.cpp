@@ -4166,7 +4166,7 @@ bool get_network_block_database_hash(std::vector<std::string> &block_verifiers_d
   if(passRootRequest==0){
      MGINFO_RED("At least need include one root node sign it");
      if(OPEN_SAFE_VALIDATE==1){
-        return true;
+        return false;
      }
   }
 
