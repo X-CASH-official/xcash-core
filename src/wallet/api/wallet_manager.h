@@ -84,11 +84,7 @@ public:
     uint64_t blockchainHeight() override;
     uint64_t blockchainTargetHeight() override;
     uint64_t networkDifficulty() override;
-    double miningHashRate() override;
     uint64_t blockTarget() override;
-    bool isMining() override;
-    bool startMining(const std::string &address, uint32_t threads = 1, bool background_mining = false, bool ignore_battery = true) override;
-    bool stopMining() override;
     std::string resolveOpenAlias(const std::string &address, bool &dnssec_valid) const override;
 
 private:
