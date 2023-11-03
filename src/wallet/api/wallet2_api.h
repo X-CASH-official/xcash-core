@@ -1164,20 +1164,8 @@ struct WalletManager
     //! returns current network difficulty
     virtual uint64_t networkDifficulty() = 0;
 
-    //! returns current mining hash rate (0 if not mining)
-    virtual double miningHashRate() = 0;
-
     //! returns current block target
     virtual uint64_t blockTarget() = 0;
-
-    //! returns true iff mining
-    virtual bool isMining() = 0;
-
-    //! starts mining with the set number of threads
-    virtual bool startMining(const std::string &address, uint32_t threads = 1, bool background_mining = false, bool ignore_battery = true) = 0;
-
-    //! stops mining
-    virtual bool stopMining() = 0;
 
     //! resolves an OpenAlias address to a xcash address
     virtual std::string resolveOpenAlias(const std::string &address, bool &dnssec_valid) const = 0;
